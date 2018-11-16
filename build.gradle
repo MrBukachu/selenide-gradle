@@ -22,7 +22,7 @@ repositories {
 dependencies {
   testCompile 'junit:junit:4.12'
   testCompile 'org.hamcrest:hamcrest-all:1.3'
-  testCompile 'com.codeborne:selenide:4.14.2'
+  testCompile 'com.codeborne:selenide:5.0.0'
   testCompile('org.seleniumhq.selenium:selenium-safari-driver:3.14.0') { transitive = false }
   testCompile('org.seleniumhq.selenium:htmlunit-driver:2.33.0')
   testCompile('com.codeborne:phantomjsdriver:1.4.4') { transitive = false }
@@ -38,43 +38,87 @@ classes.dependsOn libs
 [compileJava, compileTestJava]*.options.collect {options -> options.encoding = 'UTF-8'}
 [compileJava, compileTestJava]*.options.collect {options -> options.debug = true}
 
-tasks.withType(Test).all { testTask ->
-  testTask.systemProperties = [
-    'file.encoding': 'UTF-8',
-    'BUILD_URL': System.getenv()['BUILD_URL']
-  ]
-  testTask.testLogging.showStandardStreams = true
-  testTask.exclude 'org/selenide/examples/google/classic_page_object/**/*'
-  testTask.outputs.upToDateWhen { false }
-}
+//tasks.withType(Test).all { testTask ->
+//  testTask.systemProperties = [
+//    'file.encoding': 'UTF-8',
+//    'BUILD_URL': System.getenv()['BUILD_URL']
+//  ]
+//  testTask.testLogging.showStandardStreams = true
+//  testTask.exclude 'org/selenide/examples/google/classic_page_object/**/*'
+//  testTask.outputs.upToDateWhen { false }
+//}
+//
+//task chrome(type: Test) {
+//  systemProperties['selenide.browser'] = 'chrome'
+//  systemProperties['selenide.headless'] = 'true'
+//}
+//
+//task firefox(type: Test) {
+//  systemProperties['selenide.browser'] = 'firefox'
+//  systemProperties['selenide.headless'] = 'true'
+//}
+//
+//task ie(type: Test) {
+//  systemProperties['selenide.browser'] = 'ie'
+//}
+//
+//task edge(type: Test) {
+//  systemProperties['selenide.browser'] = 'edge'
+//}
+//
+//task htmlunit(type: Test) {
+//  systemProperties['selenide.browser'] = 'htmlunit'
+//}
+//
+//task phantomjs(type: Test) {
+//  systemProperties['selenide.browser'] = 'phantomjs'
+//}
+//
+//// You must enable the 'Allow Remote Automation' option in Safari's Develop menu to control Safari via WebDriver.
+//task safari(type: Test) {
+//  systemProperties['selenide.browser'] = 'safari'
+//}
+test {
+//  // enable TestNG support (default is JUnit)
+//  useTestNG()
+//  // enable JUnit Platform (a.k.a. JUnit 5) support
+//  useJUnitPlatform()
 
-task chrome(type: Test) {
-  systemProperties['selenide.browser'] = 'chrome'
-  systemProperties['selenide.headless'] = 'true'
-}
+//  // set a system property for the test JVM(s)
+//  systemProperty 'some.prop', 'value'
 
-task firefox(type: Test) {
-  systemProperties['selenide.browser'] = 'firefox'
-  systemProperties['selenide.headless'] = 'true'
-}
+  // explicitly include or exclude tests
+  include 'org/selenide/examples/google/parallel/paralleltestclasses/**'
+//  exclude 'org/boo/**'
 
-task ie(type: Test) {
-  systemProperties['selenide.browser'] = 'ie'
-}
 
-task edge(type: Test) {
-  systemProperties['selenide.browser'] = 'edge'
-}
+  //not possible to  un tests in a single Test class in parallel (per method), the finest level of parallelisation is at the test class level
 
-task htmlunit(type: Test) {
-  systemProperties['selenide.browser'] = 'htmlunit'
-}
+  maxParallelForks = 3
 
-task phantomjs(type: Test) {
-  systemProperties['selenide.browser'] = 'phantomjs'
-}
+//The maximum number of test classes to execute in a forked test process. The forked test process will be restarted when this limit is reached. The default value is 0 (no maximum).
+  forkEvery = 3
 
-// You must enable the 'Allow Remote Automation' option in Safari's Develop menu to control Safari via WebDriver.
-task safari(type: Test) {
-  systemProperties['selenide.browser'] = 'safari'
+  // show standard out and standard error of the test JVM(s) on the console
+  testLogging.showStandardStreams = true
+
+//  // set heap size for the test JVM(s)
+//  minHeapSize = "128m"
+//  maxHeapSize = "512m"
+
+//  // set JVM arguments for the test JVM(s)
+//  jvmArgs '-XX:MaxPermSize=256m'
+
+  // listen to events in the test execution lifecycle
+  beforeTest { descriptor ->
+    logger.lifecycle("Running test: " + descriptor)
+  }
+
+//  // Fail the 'test' task on the first test failure
+//  failFast = true
+
+  // listen to standard out and standard error of the test JVM(s)
+  onOutput { descriptor, event ->
+    logger.lifecycle("Test: " + descriptor + " produced standard out/err: " + event.message)
+  }
 }
