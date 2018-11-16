@@ -15,27 +15,7 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 
 
-public class GoogleTest2 {
-
-  @Before
-  public void setup(){
-    Configuration.driverManagerEnabled = true;
-    Configuration.startMaximized = true;
-    Configuration.screenshots = true;
-//    Configuration.remote = "http://localhost:4444/wd/hub";
-    Configuration.baseUrl = "https://google.com";
-    Configuration.holdBrowserOpen = false;
-    Configuration.browser = "chrome";
-  }
-  /*
-  Need to explicitly close browser in Selenide, since Selenide does not allow this
-  Configuration.holdBrowserOpen - is only fro debugging when need to leave browser open after all tests executed
-   */
-  @After
-  public void teardown(){
-    close();
-  }
-
+public class GoogleTest2 extends AbstractTest{
 
   @Test
   public void search_selenide_in_google() {

@@ -47,3 +47,14 @@ The project contains tests in different styles:
  * without page object (selenide_straightforward)
  * with classic _Selenium_ page object
  * with _Selenide_-style page object
+ 
+### Parallel Test Execution
+ Start Selenoid
+ ```
+  docker-compose -f docker/docker-compose-selenoid.yml up
+ ```
+ Then you can check simple status page with UI updates at
+ 
+ ```
+  http://localhost:8080/
+ ```
